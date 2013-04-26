@@ -5,3 +5,6 @@ samples/utf16-all-surrogates.txt
 cnvout-mono
 cnvout-other
 cnvout-diff
+convert.exe
+convert.exe.mdb
+gen-utf16
