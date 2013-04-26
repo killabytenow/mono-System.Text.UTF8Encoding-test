@@ -8,7 +8,7 @@ all : gen-utf16 convert.exe $(UTF16_SAMPLES)
 gen-utf16 : gen-utf16.c
 	gcc -Wall -o gen-utf16 gen-utf16.c
 
-convert.exe :
+convert.exe : convert.cs
 	mcs -debug convert.cs -out:convert.exe
 
 $(UTF16_SAMPLES) : gen-utf16
