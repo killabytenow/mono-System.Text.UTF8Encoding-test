@@ -1,0 +1,11 @@
+mono-System.Text.UTF8Encoding-test
+==================================
+
+This program is built using the Makefile included, which compiles the test
+program and generate some test files.
+
+Then it must be executed with a Mono runtime and a MS.NET runtime.
+
+Once execution is finished use the 'mkdiff.sh' shell script for comparing the
+output of both runtimes. Two compatible System.Text.UTF8Encoding shouldn't
+leave any *.diff file in the 'cnv-diff' directory.
