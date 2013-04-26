@@ -330,7 +330,7 @@ public class Example
 	public static void TestEncoding ()
 	{
 		string [] testfiles = {
-			"samples/utf16le.txt",
+			"samples/utf16be.txt",
 			"samples/utf16-all-bad-dc00-dfff.txt",
 			"samples/utf16-all-good-after-dfff.txt",
 			"samples/utf16-all-good-before-dc00.txt",
