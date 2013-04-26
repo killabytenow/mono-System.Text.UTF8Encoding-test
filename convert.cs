@@ -335,9 +335,6 @@ public class Example
 			"samples/utf16-all-good-after-dfff.txt",
 			"samples/utf16-all-good-before-dc00.txt",
 			"samples/utf16-all-surrogates.txt",
-			//"samples/utf16le-bom.txt",
-			//"samples/utf16be-bom.txt",
-			//"samples/utf16be.txt",
 		};
 		EncoderTestDefaultFallback etdf = new EncoderTestDefaultFallback (cnvout);
 		EncoderTestExceptionFallback etef = new EncoderTestExceptionFallback (cnvout);
