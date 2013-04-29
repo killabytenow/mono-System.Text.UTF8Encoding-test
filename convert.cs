@@ -15,7 +15,7 @@ public abstract class Tester
 
 	static public int min_block = 1;
 	static public int inc_block = 13;
-	static public int max_block = min_block + inc_block * 1;
+	static public int max_block = min_block + inc_block * 30;
 
 	protected StreamWriter flog;
 	protected BinaryWriter fout;
