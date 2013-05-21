@@ -8,3 +8,5 @@ cnvout-diff
 convert.exe
 convert.exe.mdb
 gen-utf16
+SomeTests.exe
+SomeTests.exe.mdb
