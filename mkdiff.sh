@@ -3,27 +3,27 @@
 MONO="cnvout-mono"
 MNET="cnvout-other"
 DIFF="cnvout-diff"
-mkdir -p "$DIFF/"
+mkdir -p "$DIFF/" "$DIFF/ok"
 for i in "$MONO/"*.txt; do
         F="`basename "$i"`"
         M="Checking file '$F'..."
         echo -n "$M\r"
-        if [ \(                                 \
-               ! -e "$DIFF/.ok-$F"              \
-               -o "$MONO/$F" -nt "$DIFF/.ok-$F" \
-               -o "$MNET/$F" -nt "$DIFF/.ok-$F" \
-             \) -a \(                           \
-               ! -e "$DIFF/$F"                  \
-               -o "$MONO/$F" -nt "$DIFF/$F"     \
-               -o "$MNET/$F" -nt "$DIFF/$F"     \
+        if [ \(                                \
+               ! -e "$DIFF/ok/$F"              \
+               -o "$MONO/$F" -nt "$DIFF/ok/$F" \
+               -o "$MNET/$F" -nt "$DIFF/ok/$F" \
+             \) -a \(                          \
+               ! -e "$DIFF/$F"                 \
+               -o "$MONO/$F" -nt "$DIFF/$F"    \
+               -o "$MNET/$F" -nt "$DIFF/$F"    \
              \) ]; then
-          rm -f -- "$DIFF/.ok-$F" "$DIFF/$F"
+          rm -f -- "$DIFF/ok/$F" "$DIFF/$F"
           if [ -e "$MONO/$F" -a -e "$MNET/$F" ]; then
-            H1="`md5sum "$MONO/$F"`"
-            H2="`md5sum "$MNET/$F"`"
-            if [ "$H1" != "$H2" ]; then
+            H1="`md5sum "$MONO/$F" | cut -f1 -d' '`"
+            H2="`md5sum "$MNET/$F" | cut -f1 -d' '`"
+            if [ "$H1" = "$H2" ]; then
               echo -n "`echo "$M" | sed 's#.# #g'`\r"
-              echo "ok!" > "$DIFF/.ok-$F"
+              echo "ok!" > "$DIFF/ok/$F"
             else
               echo "Differences found in file '$F'."
               diff -ur "$MONO/$F" "$MNET/$F" > "$DIFF/$F"
