@@ -371,8 +371,8 @@ public class Example
 		if (!Directory.Exists (cnvout))
 			Directory.CreateDirectory (cnvout);
 
-		TestEncoding ();
 		TestDecoding ();
+		TestEncoding ();
 	}
 }
 
