@@ -182,20 +182,18 @@ public class SomeTests
 
 	struct EncoderFallbackExceptionTest
 	{
-		public bool valid;
+		public bool valid, unknown_surrogate;
 		public string str;
-		public int index, index_fail, length;
+		public int index_fail;
 		public EncoderFallbackExceptionTest (
 				bool valid,
 				string str,
-				int index,
-				int index_fail, int length)
+				int index_fail, bool unknown_surrogate)
 		{
 			this.valid = valid;
 			this.str = str;
-			this.index = index;
 			this.index_fail = index_fail;
-			this.length = length;
+			this.unknown_surrogate = unknown_surrogate;
 		}
 	}
 
@@ -204,17 +202,23 @@ public class SomeTests
 
 		EncoderFallbackExceptionTest [] tests = new EncoderFallbackExceptionTest []
 		{
-			new EncoderFallbackExceptionTest ( false, "Using surrogate \uD800 without a surrogate.", 16, 16, 1),
-			new EncoderFallbackExceptionTest ( false, "Using surrogate \uD877 without a surrogate.", 16, 16, 1),
-			new EncoderFallbackExceptionTest ( false, "Using surrogate \uD8FF without a surrogate.", 16, 16, 1),
-			new EncoderFallbackExceptionTest ( true,  "Playing with limit of \uDBFF\uDC00.",         22, 22, 1),
-			new EncoderFallbackExceptionTest ( false, "Playing before limit of \uD800\uD7FF.",       24, 24, 1),
-			new EncoderFallbackExceptionTest ( false, "Playing after limit of \uDFFF\uE000.",        23, 23, 1),
-			new EncoderFallbackExceptionTest ( true,  "Playing with first surrogate \uD800\uDC00.",  29, 29, 1),
-			new EncoderFallbackExceptionTest ( false, "Playing with last surrogate \uDBFF\uFFFF.",   28, 28, 1),
-
-			new EncoderFallbackExceptionTest ( true,  "Last value \uFFFF.", 11, -1, 0),
-			new EncoderFallbackExceptionTest ( true,  "Zero \u0000.", 5, -1, 0)
+			/* #1  */ new EncoderFallbackExceptionTest ( true,  "Zero \u0000.",                                    5, false),
+			/* #2  */ new EncoderFallbackExceptionTest ( true,  "Last before leads \uD7FF.",                      18, false),
+			/* #3  */ new EncoderFallbackExceptionTest ( false, "Using lead \uD800 without a surrogate.",         11, false),
+			/* #4  */ new EncoderFallbackExceptionTest ( false, "Using lead \uD877 without a surrogate.",         11, false),
+			/* #5  */ new EncoderFallbackExceptionTest ( false, "Using lead \uDBFF without a surrogate.",         11, false),
+			/* #6  */ new EncoderFallbackExceptionTest ( false, "Using trail \uDC00 without a lead.",             12, false),
+			/* #7  */ new EncoderFallbackExceptionTest ( false, "Using trail \uDBFF without a lead.",             12, false),
+			/* #8  */ new EncoderFallbackExceptionTest ( true,  "First-plane 2nd block \uE000.",                  22, false),
+			/* #9  */ new EncoderFallbackExceptionTest ( true,  "First-plane 2nd block \uFFFF.",                  22, false),
+			/* #10 */ new EncoderFallbackExceptionTest ( true,  "Playing with first surrogate \uD800\uDC00.",     29, false),
+			/* #11 */ new EncoderFallbackExceptionTest ( false, "Playing before first surrogate \uD800\uDBFF.",   31, false),
+			/* #12 */ new EncoderFallbackExceptionTest ( true,  "Playing with last of first plane \uD800\uDFFF.", 33, false),
+			/* #13 */ new EncoderFallbackExceptionTest ( true,  "Playing with first of last plane \uDBFF\uDC00.", 33, false),
+			/* #14 */ new EncoderFallbackExceptionTest ( true,  "Playing with last surrogate \uDBFF\uDFFF.",      28, false),
+			/* #15 */ new EncoderFallbackExceptionTest ( false, "Playing after last surrogate \uDBFF\uE000.",     29, false),
+			/* #16 */ new EncoderFallbackExceptionTest ( false, "Incomplete string \uD800",                       18, false),
+			/* #17 */ new EncoderFallbackExceptionTest ( false, "Horrible thing \uD800\uD800.",                   15, false),
 		};
 		Encoding utf8 = Encoding.GetEncoding (
 					"utf-8",
@@ -241,6 +245,22 @@ public class SomeTests
 					int expected_index_fail = t.index_fail;
 					if (ex.Index != expected_index_fail)
 						Console.WriteLine ("FallbackExceptions: test#{0}-1: Expected exception at {1} not {2}.", testno, expected_index_fail, ex.Index);
+					if (ex.IsUnknownSurrogate () != t.unknown_surrogate)
+						Console.WriteLine ("FallbackExceptions: test#{0}-1: Expected {1} not {2} in IsUnknownSurrogate().", testno, t.unknown_surrogate, ex.IsUnknownSurrogate ());
+					else {
+						if (ex.IsUnknownSurrogate ())
+						{
+							if (ex.CharUnknownHigh != t.str[ex.Index] || ex.CharUnknownLow  != t.str[ex.Index + 1])
+								Console.WriteLine ("FallbackExceptions: test#{0}-1: expected ({1:X}, {2:X}) not ({3:X}, {4:X}).",
+											testno,
+											t.str[ex.Index], t.str[ex.Index + 1],
+											ex.CharUnknownHigh, ex.CharUnknownLow);
+						} else {
+							if (ex.CharUnknown != t.str[ex.Index])
+								Console.WriteLine ("FallbackExceptions: test#{0}-1: expected ({1:X}) not ({2:X}).",
+											testno, t.str[ex.Index], ex.CharUnknown);
+						}
+					}
 					c = ex.Index + 1;
 				} else {
 					Console.WriteLine ("FallbackExceptions: test#{0}-1: UNEXPECTED FAIL", testno);
@@ -265,6 +285,22 @@ public class SomeTests
 						int expected_index_fail = t.index_fail;
 						if (ex.Index != expected_index_fail)
 							Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 1: Expected exception at {2} not {3}.", testno, b,expected_index_fail, ex.Index);
+						if (ex.IsUnknownSurrogate () != t.unknown_surrogate)
+							Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 1: Expected {2} not {3} in IsUnknownSurrogate().", testno, t.unknown_surrogate, ex.IsUnknownSurrogate ());
+						else {
+							if (ex.IsUnknownSurrogate ())
+							{
+								if (ex.CharUnknownHigh != t.str[ex.Index] || ex.CharUnknownLow  != t.str[ex.Index + 1])
+									Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: expected ({2:X}, {3:X}) not ({4:X}, {5:X}).",
+												testno, b,
+												t.str[ex.Index], t.str[ex.Index + 1],
+												ex.CharUnknownHigh, ex.CharUnknownLow);
+							} else {
+								if (ex.CharUnknown != t.str[ex.Index])
+									Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: expected ({2:X}) not ({3:X}).",
+												testno, b, t.str[ex.Index], ex.CharUnknown);
+							}
+						}
 						c = ex.Index + 1;
 					} else {
 						Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 1:  UNEXPECTED EXCEPTION (Index={2})", testno, b, ex.Index);
@@ -285,15 +321,22 @@ public class SomeTests
 						int expected_index_fail = t.index_fail - c;
 						if (ex.Index != expected_index_fail)
 							Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: Expected exception at {2} not {3}.", testno, b, expected_index_fail, ex.Index);
-						//Console.WriteLine (
-						//	ex.IsUnknownSurrogate ()
-						//		? String.Format ("  ++ Unable to encode pair {0:X} {1:X} at index {2}, ",
-						//					(uint) ex.CharUnknownHigh,
-						//					(uint) ex.CharUnknownLow,
-						//					ex.Index)
-						//		: String.Format ("  ++ Unable to encode char {0:X} at index {1}, ",
-						//					(uint) ex.CharUnknown,
-						//					ex.Index));
+						if (ex.IsUnknownSurrogate () != t.unknown_surrogate)
+							Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: Expected {2} not {3} in IsUnknownSurrogate().", testno, t.unknown_surrogate, ex.IsUnknownSurrogate ());
+						else {
+							if (ex.IsUnknownSurrogate ())
+							{
+								if (ex.CharUnknownHigh != t.str[c + ex.Index] || ex.CharUnknownLow  != t.str[c + ex.Index + 1])
+									Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: expected ({2:X}, {3:X}) not ({4:X}, {5:X}).",
+												testno, b,
+												t.str[c + ex.Index], t.str[c + ex.Index + 1],
+												ex.CharUnknownHigh, ex.CharUnknownLow);
+							} else {
+								if (ex.CharUnknown != t.str[c + ex.Index])
+									Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: expected ({2:X}) not ({3:X}).",
+												testno, b, t.str[c + ex.Index], ex.CharUnknown);
+							}
+						}
 					} else {
 						Console.WriteLine ("FallbackExceptions: test#{0}-2-{1}/try 2: UNEXPECTED FAIL (Index={2})", testno, b, ex.Index);
 					}
