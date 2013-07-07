@@ -213,153 +213,153 @@ public class SomeTests
 				new int [] { },
 				new byte [] {
 					0xce, 0xba, 0xe1, 0xbd, 0xb9, 0xcf,
-					0x83, 0xce, 0xbc, 0xce, 0xb5 } ),
+					0x83, 0xce, 0xbc, 0xce, 0xb5 }),
 			/* #2  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 1 byte",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0x00 } ),
+				new byte [] { 0x00 }),
 			/* #3  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 2 bytes",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xc2, 0x80 } ),
+				new byte [] { 0xc2, 0x80 }),
 			/* #4  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 3 bytes",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xe0, 0xa0, 0x80 } ),
+				new byte [] { 0xe0, 0xa0, 0x80 }),
 			/* #5  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 4 bytes",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xf0, 0x90, 0x80, 0x80 } ),
+				new byte [] { 0xf0, 0x90, 0x80, 0x80 }),
 			/* #6  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 5 bytes",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xf8, 0x88, 0x80, 0x80, 0x80 } ),
+				new byte [] { 0xf8, 0x88, 0x80, 0x80, 0x80 }),
 			/* #7  */
 			new DecoderFallbackExceptionTest (
 				"First possible sequence of 6 bytes",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
 				new byte [] {
-					0xfc, 0x84, 0x80, 0x80, 0x80, 0x80 } ),
+					0xfc, 0x84, 0x80, 0x80, 0x80, 0x80 }),
 			/* #8  */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 1 byte",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0x7f } ),
+				new byte [] { 0x7f }),
 			/* #9  */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 2 bytes",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xdf, 0xbf } ),
+				new byte [] { 0xdf, 0xbf }),
 			/* #10 */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 3 bytes",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xef, 0xbf, 0xbf } ),
+				new byte [] { 0xef, 0xbf, 0xbf }),
 			/* #11 */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 4 bytes",
 				new int [] { 0, 1, 2, 3 },
 				new int [] { 1, 1, 1, 1 },
-				new byte [] { 0xf7, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xf7, 0xbf, 0xbf, 0xbf }),
 			/* #12 */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 5 bytes",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xfb, 0xbf, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xfb, 0xbf, 0xbf, 0xbf, 0xbf }),
 			/* #13 */
 			new DecoderFallbackExceptionTest (
 				"Last possible sequence of 6 bytes",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
-				new byte [] { 0xfd, 0xbf, 0xbf, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xfd, 0xbf, 0xbf, 0xbf, 0xbf, 0xbf }),
 			/* #14 */
 			new DecoderFallbackExceptionTest (
 				"U-0000D7FF = ed 9f bf",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xed, 0x9f, 0xbf } ),
+				new byte [] { 0xed, 0x9f, 0xbf }),
 			/* #15 */
 			new DecoderFallbackExceptionTest (
 				"U-0000E000 = ee 80 80",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xee, 0x80, 0x80 } ),
+				new byte [] { 0xee, 0x80, 0x80 }),
 			/* #16 */
 			new DecoderFallbackExceptionTest (
 				"U-0000FFFD = ef bf bd",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xef, 0xbf, 0xbd } ),
+				new byte [] { 0xef, 0xbf, 0xbd }),
 			/* #17 */
 			new DecoderFallbackExceptionTest (
 				"U-0010FFFF = f4 8f bf bf",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xf4, 0x8f, 0xbf, 0xbf } ),
+				new byte [] { 0xf4, 0x8f, 0xbf, 0xbf }),
 			/* #18 */
 			new DecoderFallbackExceptionTest (
 				"U-00110000 = f4 90 80 80",
 				new int [] { 0, 2, 3 },
 				new int [] { 2, 1, 1 },
-				new byte [] { 0xf4, 0x90, 0x80, 0x80 } ),
+				new byte [] { 0xf4, 0x90, 0x80, 0x80 }),
 			/* #19 */
 			new DecoderFallbackExceptionTest (
 				"First continuation byte 0x80",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0x80 } ),
+				new byte [] { 0x80 }),
 			/* #20 */
 			new DecoderFallbackExceptionTest (
 				"Last  continuation byte 0xbf",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0xbf } ),
+				new byte [] { 0xbf }),
 			/* #21 */
 			new DecoderFallbackExceptionTest (
 				"2 continuation bytes",
 				new int [] { 0, 1 },
 				new int [] { 1, 1 },
-				new byte [] { 0x80, 0xbf } ),
+				new byte [] { 0x80, 0xbf }),
 			/* #22 */
 			new DecoderFallbackExceptionTest (
 				"3 continuation bytes",
 				new int [] { 0, 1, 2 },
 				new int [] { 1, 1, 1 },
-				new byte [] { 0x80, 0xbf, 0x80 } ),
+				new byte [] { 0x80, 0xbf, 0x80 }),
 			/* #23 */
 			new DecoderFallbackExceptionTest (
 				"4 continuation bytes",
 				new int [] { 0, 1, 2, 3 },
 				new int [] { 1, 1, 1, 1 },
-				new byte [] { 0x80, 0xbf, 0x80, 0xbf } ),
+				new byte [] { 0x80, 0xbf, 0x80, 0xbf }),
 			/* #24 */
 			new DecoderFallbackExceptionTest (
 				"5 continuation bytes",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0x80, 0xbf, 0x80, 0xbf, 0x80 } ),
+				new byte [] { 0x80, 0xbf, 0x80, 0xbf, 0x80 }),
 			/* #25 */
 			new DecoderFallbackExceptionTest (
 				"6 continuation bytes",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
 				new byte [] {
-					0x80, 0xbf, 0x80, 0xbf, 0x80, 0xbf } ),
+					0x80, 0xbf, 0x80, 0xbf, 0x80, 0xbf }),
 			/* #26 */
 			new DecoderFallbackExceptionTest (
 				"7 continuation bytes",
@@ -367,7 +367,7 @@ public class SomeTests
 				new int [] { 1, 1, 1, 1, 1, 1, 1 },
 				new byte [] {
 					0x80, 0xbf, 0x80, 0xbf, 0x80, 0xbf,
-					0x80 } ),
+					0x80 }),
 			/* #27 */
 			new DecoderFallbackExceptionTest (
 				"Sequence of all 64 continuation bytes",
@@ -398,7 +398,7 @@ public class SomeTests
 					0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf,
 					0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5,
 					0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xbb,
-					0xbc, 0xbd, 0xbe, 0xbf } ),
+					0xbc, 0xbd, 0xbe, 0xbf }),
 			/* #28 */
 			new DecoderFallbackExceptionTest (
 				"All 32 first bytes of 2-byte sequences (0xc0-0xdf), each followed by a space character",
@@ -429,7 +429,7 @@ public class SomeTests
 					0xd5, 0x20, 0xd6, 0x20, 0xd7, 0x20,
 					0xd8, 0x20, 0xd9, 0x20, 0xda, 0x20,
 					0xdb, 0x20, 0xdc, 0x20, 0xdd, 0x20,
-					0xde, 0x20, 0xdf, 0x20 } ),
+					0xde, 0x20, 0xdf, 0x20 }),
 			/* #29 */
 			new DecoderFallbackExceptionTest (
 				"All 16 first bytes of 3-byte sequences (0xe0-0xef), each followed by a space character",
@@ -449,7 +449,7 @@ public class SomeTests
 					0xe6, 0x20, 0xe7, 0x20, 0xe8, 0x20,
 					0xe9, 0x20, 0xea, 0x20, 0xeb, 0x20,
 					0xec, 0x20, 0xed, 0x20, 0xee, 0x20,
-					0xef, 0x20 } ),
+					0xef, 0x20 }),
 			/* #30 */
 			new DecoderFallbackExceptionTest (
 				"All 8 first bytes of 4-byte sequences (0xf0-0xf7), each followed by a space character",
@@ -458,7 +458,7 @@ public class SomeTests
 				new byte [] {
 					0xf0, 0x20, 0xf1, 0x20, 0xf2, 0x20,
 					0xf3, 0x20, 0xf4, 0x20, 0xf5, 0x20,
-					0xf6, 0x20, 0xf7, 0x20 } ),
+					0xf6, 0x20, 0xf7, 0x20 }),
 			/* #31 */
 			new DecoderFallbackExceptionTest (
 				"All 4 first bytes of 5-byte sequences (0xf8-0xfb), each followed by a space character",
@@ -466,73 +466,73 @@ public class SomeTests
 				new int [] { 1, 1, 1, 1 },
 				new byte [] {
 					0xf8, 0x20, 0xf9, 0x20, 0xfa, 0x20,
-					0xfb, 0x20 } ),
+					0xfb, 0x20 }),
 			/* #32 */
 			new DecoderFallbackExceptionTest (
 				"All 2 first bytes of 6-byte sequences (0xfc-0xfd), each followed by a space character",
 				new int [] { 0, 2 },
 				new int [] { 1, 1 },
-				new byte [] { 0xfc, 0x20, 0xfd, 0x20 } ),
+				new byte [] { 0xfc, 0x20, 0xfd, 0x20 }),
 			/* #33 */
 			new DecoderFallbackExceptionTest (
 				"2-byte sequence with last byte missing",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0xc0 } ),
+				new byte [] { 0xc0 }),
 			/* #34 */
 			new DecoderFallbackExceptionTest (
 				"3-byte sequence with last byte missing",
 				new int [] { 0 },
 				new int [] { 2 },
-				new byte [] { 0xe0, 0x80 } ),
+				new byte [] { 0xe0, 0x80 }),
 			/* #35 */
 			new DecoderFallbackExceptionTest (
 				"4-byte sequence with last byte missing",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xf0, 0x80, 0x80 } ),
+				new byte [] { 0xf0, 0x80, 0x80 }),
 			/* #36 */
 			new DecoderFallbackExceptionTest (
 				"5-byte sequence with last byte missing",
 				new int [] { 0, 1, 2, 3 },
 				new int [] { 1, 1, 1, 1 },
-				new byte [] { 0xf8, 0x80, 0x80, 0x80 } ),
+				new byte [] { 0xf8, 0x80, 0x80, 0x80 }),
 			/* #37 */
 			new DecoderFallbackExceptionTest (
 				"6-byte sequence with last byte missing",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xfc, 0x80, 0x80, 0x80, 0x80 } ),
+				new byte [] { 0xfc, 0x80, 0x80, 0x80, 0x80 }),
 			/* #38 */
 			new DecoderFallbackExceptionTest (
 				"2-byte sequence with last byte missing",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0xdf } ),
+				new byte [] { 0xdf }),
 			/* #39 */
 			new DecoderFallbackExceptionTest (
 				"3-byte sequence with last byte missing",
 				new int [] { 0 },
 				new int [] { 2 },
-				new byte [] { 0xef, 0xbf } ),
+				new byte [] { 0xef, 0xbf }),
 			/* #40 */
 			new DecoderFallbackExceptionTest (
 				"4-byte sequence with last byte missing",
 				new int [] { 0, 1, 2 },
 				new int [] { 1, 1, 1 },
-				new byte [] { 0xf7, 0xbf, 0xbf } ),
+				new byte [] { 0xf7, 0xbf, 0xbf }),
 			/* #41 */
 			new DecoderFallbackExceptionTest (
 				"5-byte sequence with last byte missing",
 				new int [] { 0, 1, 2, 3 },
 				new int [] { 1, 1, 1, 1 },
-				new byte [] { 0xfb, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xfb, 0xbf, 0xbf, 0xbf }),
 			/* #42 */
 			new DecoderFallbackExceptionTest (
 				"6-byte sequence with last byte missing",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xfd, 0xbf, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xfd, 0xbf, 0xbf, 0xbf, 0xbf }),
 			/* #43 */
 			new DecoderFallbackExceptionTest (
 				"All the 10 sequences of 3.3 concatenated",
@@ -555,228 +555,228 @@ public class SomeTests
 					0xf8, 0x80, 0x80, 0x80, 0xfc, 0x80,
 					0x80, 0x80, 0x80, 0xdf, 0xef, 0xbf,
 					0xf7, 0xbf, 0xbf, 0xfb, 0xbf, 0xbf,
-					0xbf, 0xfd, 0xbf, 0xbf, 0xbf, 0xbf } ),
+					0xbf, 0xfd, 0xbf, 0xbf, 0xbf, 0xbf }),
 			/* #44 */
 			new DecoderFallbackExceptionTest (
 				"Bad chars fe",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0xfe } ),
+				new byte [] { 0xfe }),
 			/* #45 */
 			new DecoderFallbackExceptionTest (
 				"Bad chars ff",
 				new int [] { 0 },
 				new int [] { 1 },
-				new byte [] { 0xff } ),
+				new byte [] { 0xff }),
 			/* #46 */
 			new DecoderFallbackExceptionTest (
 				"Bad chars fe fe ff ff",
 				new int [] { 0, 1, 2, 3 },
 				new int [] { 1, 1, 1, 1 },
-				new byte [] { 0xfe, 0xfe, 0xff, 0xff } ),
+				new byte [] { 0xfe, 0xfe, 0xff, 0xff }),
 			/* #47 */
 			new DecoderFallbackExceptionTest (
 				"Overlong U+002F = c0 af",
 				new int [] { 0, 1 },
 				new int [] { 1, 1 },
-				new byte [] { 0xc0, 0xaf } ),
+				new byte [] { 0xc0, 0xaf }),
 			/* #48 */
 			new DecoderFallbackExceptionTest (
 				"Overlong U+002F = e0 80 af",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xe0, 0x80, 0xaf } ),
+				new byte [] { 0xe0, 0x80, 0xaf }),
 			/* #49 */
 			new DecoderFallbackExceptionTest (
 				"Overlong U+002F = f0 80 80 af",
 				new int [] { 0, 2, 3 },
 				new int [] { 2, 1, 1 },
-				new byte [] { 0xf0, 0x80, 0x80, 0xaf } ),
+				new byte [] { 0xf0, 0x80, 0x80, 0xaf }),
 			/* #50 */
 			new DecoderFallbackExceptionTest (
 				"Overlong U+002F = f8 80 80 80 af",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xf8, 0x80, 0x80, 0x80, 0xaf } ),
+				new byte [] { 0xf8, 0x80, 0x80, 0x80, 0xaf }),
 			/* #51 */
 			new DecoderFallbackExceptionTest (
 				"Overlong U+002F = fc 80 80 80 80 af",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
 				new byte [] {
-					0xfc, 0x80, 0x80, 0x80, 0x80, 0xaf } ),
+					0xfc, 0x80, 0x80, 0x80, 0x80, 0xaf }),
 			/* #52 */
 			new DecoderFallbackExceptionTest (
 				"Maximum overlong U-0000007F",
 				new int [] { 0, 1 },
 				new int [] { 1, 1 },
-				new byte [] { 0xc1, 0xbf } ),
+				new byte [] { 0xc1, 0xbf }),
 			/* #53 */
 			new DecoderFallbackExceptionTest (
 				"Maximum overlong U-000007FF",
 				new int [] { 0, 2 },
 				new int [] { 2, 1, },
-				new byte [] { 0xe0, 0x9f, 0xbf } ),
+				new byte [] { 0xe0, 0x9f, 0xbf }),
 			/* #54 */
 			new DecoderFallbackExceptionTest (
 				"Maximum overlong U-0000FFFF",
 				new int [] { 0, 2, 3 },
 				new int [] { 2, 1, 1 },
-				new byte [] { 0xf0, 0x8f, 0xbf, 0xbf } ),
+				new byte [] { 0xf0, 0x8f, 0xbf, 0xbf }),
 			/* #55 */
 			new DecoderFallbackExceptionTest (	
 				"Maximum overlong U-001FFFFF",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xf8, 0x87, 0xbf, 0xbf, 0xbf } ),
+				new byte [] { 0xf8, 0x87, 0xbf, 0xbf, 0xbf }),
 			/* #56 */
 			new DecoderFallbackExceptionTest (
 				"Maximum overlong U-03FFFFFF",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
 				new byte [] {
-					0xfc, 0x83, 0xbf, 0xbf, 0xbf, 0xbf } ),
+					0xfc, 0x83, 0xbf, 0xbf, 0xbf, 0xbf }),
 			/* #57 */
 			new DecoderFallbackExceptionTest (
 				"Null overlong c0 80",
 				new int [] { 0, 1 },
 				new int [] { 1, 1 },
-				new byte [] { 0xc0, 0x80, 0x22 } ),
+				new byte [] { 0xc0, 0x80, 0x22 }),
 			/* #58 */
 			new DecoderFallbackExceptionTest (
 				"Null overlong e0 80 80",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xe0, 0x80, 0x80 } ),
+				new byte [] { 0xe0, 0x80, 0x80 }),
 			/* #59 */
 			new DecoderFallbackExceptionTest (
 				"Null overlong f0 80 80 80",
 				new int [] { 0, 2, 3 },
 				new int [] { 2, 1, 1 },
-				new byte [] { 0xf0, 0x80, 0x80, 0x80 } ),
+				new byte [] { 0xf0, 0x80, 0x80, 0x80 }),
 			/* #60 */
 			new DecoderFallbackExceptionTest (
 				"Null overlong f8 80 80 80 80",
 				new int [] { 0, 1, 2, 3, 4 },
 				new int [] { 1, 1, 1, 1, 1 },
-				new byte [] { 0xf8, 0x80, 0x80, 0x80, 0x80 } ),
+				new byte [] { 0xf8, 0x80, 0x80, 0x80, 0x80 }),
 			/* #61 */
 			new DecoderFallbackExceptionTest (
 				"Null overlong fc 80 80 80 80 80",
 				new int [] { 0, 1, 2, 3, 4, 5 },
 				new int [] { 1, 1, 1, 1, 1, 1 },
 				new byte [] {
-					0xfc, 0x80, 0x80, 0x80, 0x80, 0x80 } ),
+					0xfc, 0x80, 0x80, 0x80, 0x80, 0x80 }),
 			/* #62 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+D800",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xa0, 0x80 } ),
+				new byte [] { 0xed, 0xa0, 0x80 }),
 			/* #63 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DB7F",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xad, 0xbf } ),
+				new byte [] { 0xed, 0xad, 0xbf }),
 			/* #64 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DB80",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xae, 0x80 } ),
+				new byte [] { 0xed, 0xae, 0x80 }),
 			/* #65 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DBFF",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xaf, 0xbf } ),
+				new byte [] { 0xed, 0xaf, 0xbf }),
 			/* #66 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DC00",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xb0, 0x80 } ),
+				new byte [] { 0xed, 0xb0, 0x80 }),
 			/* #67 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DF80",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xbe, 0x80 } ),
+				new byte [] { 0xed, 0xbe, 0x80 }),
 			/* #68 */
 			new DecoderFallbackExceptionTest (
 				"Single UTF-16 surrogate U+DFFF",
 				new int [] { 0, 2 },
 				new int [] { 2, 1 },
-				new byte [] { 0xed, 0xbf, 0xbf } ),
+				new byte [] { 0xed, 0xbf, 0xbf }),
 			/* #69 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+D800 U+DC00",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xa0, 0x80, 0xed, 0xb0, 0x80 } ),
+					0xed, 0xa0, 0x80, 0xed, 0xb0, 0x80 }),
 			/* #70 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+D800 U+DFFF",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xa0, 0x80, 0xed, 0xbf, 0xbf } ),
+					0xed, 0xa0, 0x80, 0xed, 0xbf, 0xbf }),
 			/* #71 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DB7F U+DC00",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xad, 0xbf, 0xed, 0xb0, 0x80 } ),
+					0xed, 0xad, 0xbf, 0xed, 0xb0, 0x80 }),
 			/* #72 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DB7F U+DFFF",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xad, 0xbf, 0xed, 0xbf, 0xbf } ),
+					0xed, 0xad, 0xbf, 0xed, 0xbf, 0xbf }),
 			/* #73 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DB80 U+DC00",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xae, 0x80, 0xed, 0xb0, 0x80 } ),
+					0xed, 0xae, 0x80, 0xed, 0xb0, 0x80 }),
 			/* #74 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DB80 U+DFFF",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xae, 0x80, 0xed, 0xbf, 0xbf } ),
+					0xed, 0xae, 0x80, 0xed, 0xbf, 0xbf }),
 			/* #75 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DBFF U+DC00",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xaf, 0xbf, 0xed, 0xb0, 0x80 } ),
+					0xed, 0xaf, 0xbf, 0xed, 0xb0, 0x80 }),
 			/* #76 */
 			new DecoderFallbackExceptionTest (
 				"Paired UTF-16 surrogate U+DBFF U+DFFF",
 				new int [] { 0, 2, 3, 5 },
 				new int [] { 2, 1, 2, 1 },
 				new byte [] {
-					0xed, 0xaf, 0xbf, 0xed, 0xbf, 0xbf } ),
+					0xed, 0xaf, 0xbf, 0xed, 0xbf, 0xbf }),
 			/* #77 */
 			new DecoderFallbackExceptionTest (
 				"Illegal code position U+FFFE",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xef, 0xbf, 0xbe } ),
+				new byte [] { 0xef, 0xbf, 0xbe }),
 			/* #78 */
 			new DecoderFallbackExceptionTest (
 				"Illegal code position U+FFFF",
 				new int [] { },
 				new int [] { },
-				new byte [] { 0xef, 0xbf, 0xbf } ),
+				new byte [] { 0xef, 0xbf, 0xbf }),
 		};
 		Encoding utf8 = Encoding.GetEncoding (
 					"utf-8",
@@ -825,10 +825,8 @@ public class SomeTests
 
 			// #2 convert in several rounds
 			for (b = 1; b < t.bytes.Length; b += 1) {
-//Console.WriteLine ("DecoderFallbackExceptions: test#{0}-1: block {1}", testno, b);
 				ce = 0; // current exception
 				for (c = 0; c < t.bytes.Length; ) {
-//Console.WriteLine ("DecoderFallbackExceptions: test#{0}-1-{1}: offset {2}", testno, b, c);
 					try {
 						bu = c + b > t.bytes.Length
 							? t.bytes.Length - c
@@ -839,10 +837,8 @@ public class SomeTests
 							c + bu >= t.bytes.Length,
 							out bytesUsed, out charsUsed,
 							out completed);
-//Console.WriteLine ("DecoderFallbackExceptions: test#{0}-1-{1}: bytesUsed {2}", testno, b, bytesUsed);
 						c += bytesUsed;
 					} catch(DecoderFallbackException ex) {
-//Console.WriteLine ("DecoderFallbackExceptions: test#{0}-2-{1}#{2}: c={3}, eIndex={4}, eBytesUnknwon={5}", testno, b, ce, c, ex.Index, ex.BytesUnknown.Length);
 						if (t.eindex.Length > ce)
 						{
 							if (ex.Index + c != t.eindex[ce])
