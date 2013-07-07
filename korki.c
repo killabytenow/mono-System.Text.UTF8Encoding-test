@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 			mode++;
 			break;
 		case 0:
-			printf("new EncoderFallbackExceptionTest ( ");
+			printf("new DecoderFallbackExceptionTest ( ");
 			mode++;
 		case 1:
 			putchar(c);
