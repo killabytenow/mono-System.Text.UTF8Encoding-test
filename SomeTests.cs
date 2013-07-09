@@ -1,13 +1,19 @@
 // sometest from mono nunit tests
 
+using NUnit.Framework;
 using System;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 
+namespace RogerWilco
+{
+
+[TestFixture]
 public class SomeTests
 {
-	public static void DecoderConvertLimitedDestination ()
+	[Test]
+	public void Decoder_ConvertLimitedDestination ()
 	{
 		char [] chars = new char [10000];
 		byte [] bytes = new byte [10000];
@@ -17,14 +23,15 @@ public class SomeTests
 		bool done;
 
 		conv.Convert (bytes, 0, 10000, chars, 0, 1000, true,
-			out charsUsed, out bytesUsed, out done);
+			      out charsUsed, out bytesUsed, out done);
 
-		Console.Write (String.Format ("DecoderConvertLimitedDestination: #1 done should be false <{0}>\n", done));
-		Console.Write (String.Format ("DecoderConvertLimitedDestination: #2 charsUsed should be 1000 <{0}>\n", charsUsed));
-		Console.Write (String.Format ("DecoderConvertLimitedDestination: #3 bytesUsed should be 1000 <{0}>\n", bytesUsed));
+		Assert.IsFalse (done, "#1");
+		Assert.AreEqual (1000, charsUsed, "#2");
+		Assert.AreEqual (1000, bytesUsed, "#3");
 	}
 
-	public static void EncoderConvertLimitedDestination ()
+	[Test]
+	public void Encoder_ConvertLimitedDestination ()
 	{
 		byte [] bytes = new byte [10000];
 		char [] chars = new char [10000];
@@ -34,49 +41,47 @@ public class SomeTests
 		bool done;
 
 		conv.Convert (chars, 0, 10000, bytes, 0, 1000, true,
-			out bytesUsed, out charsUsed, out done);
+			      out bytesUsed, out charsUsed, out done);
 
-		Console.Write (String.Format ("EncoderConvertLimitedDestination: #1 done should be false <{0}>\n", done));
-		Console.Write (String.Format ("EncoderConvertLimitedDestination: #2 bytesUsed should be 1000 <{0}>\n", bytesUsed));
-		Console.Write (String.Format ("EncoderConvertLimitedDestination: #3 charsUsed should be 1000 <{0}>\n", charsUsed));
+		Assert.IsFalse (done, "#1");
+		Assert.AreEqual (1000, bytesUsed, "#2");
+		Assert.AreEqual (1000, charsUsed, "#3");
 	}
 
-	public static void Bug10788 ()
+	[Test]
+	[ExpectedException (typeof (ArgumentException))]
+	public void Bug10788()
 	{
 		byte[] bytes = new byte[4096];
 		char[] chars = new char[10];
 
-		try {
-			Encoding.UTF8.GetDecoder ().GetChars (bytes, 0, 4096, chars, 9, false);
-			Console.Write ("Bug10788: FAIL: Expected ArgumentException.\n");
-		} catch(ArgumentException) {
-			Console.Write ("Bug10788: Received expected ArgumentException.\n");
-		}
+		Encoding.UTF8.GetDecoder ().GetChars (bytes, 0, 4096, chars, 9, false);
 	}
 
-	public static void Bug10789()
+	[Test]
+	public void Bug10789()
 	{
 		byte[] bytes = new byte[4096];
 		char[] chars = new char[10];
 
 		try {
 			Encoding.UTF8.GetDecoder ().GetChars (bytes, 0, 1, chars, 10, false);
-			Console.Write ("Bug10789: FAIL: Expected ArgumentException.\n");
+			Assert.Fail ("ArgumentException is expected #1");
 		} catch (ArgumentException) {
-			Console.Write ("Bug10789: Received expected ArgumentException.\n");
 		}
+
 		try {
 			Encoding.UTF8.GetDecoder ().GetChars (bytes, 0, 1, chars, 11, false);
-			Console.Write ("Bug10789: FAIL: Expected ArgumentOutOfRangeException.\n");
+			Assert.Fail ("ArgumentOutOfRangeException is expected #2");
 		} catch (ArgumentOutOfRangeException) {
-			Console.Write ("Bug10789: Received expected ArgumentOutOfRangeException.\n");
 		}
 
 		int charactersWritten = Encoding.UTF8.GetDecoder ().GetChars (bytes, 0, 0, chars, 10, false);
-		Console.Write (String.Format ("Bug10789: #3 charactersWritten should be 0 <{0}>\n", charactersWritten));
+		Assert.AreEqual (0, charactersWritten, "#3");
 	}
 
-	public static void ConvertZeroCharacters ()
+	[Test]
+	public void ConvertZeroCharacters ()
 	{
 		int charsUsed, bytesUsed;
 		bool completed;
@@ -86,60 +91,26 @@ public class SomeTests
 			new char[0], 0, 0, bytes, 0, bytes.Length, true,
 			out charsUsed, out bytesUsed, out completed);
 
-		Console.Write (String.Format ("ConvertZeroCharacters: #1 completed should be TRUE <{0}>\n", completed));
-		Console.Write (String.Format ("ConvertZeroCharacters: #2 charsUsed should be 0 <{0}>\n", charsUsed));
-		Console.Write (String.Format ("ConvertZeroCharacters: #3 bytesUsed should be 0 <{0}>\n", bytesUsed));
+		Assert.IsTrue (completed, "#1");
+		Assert.AreEqual (0, charsUsed, "#2");
+		Assert.AreEqual (0, bytesUsed, "#3");
 	}
 
-	public static void SufficientByteArray ()
-	{
-		Encoder e = Encoding.UTF8.GetEncoder ();
-		byte [] bytes = new byte [0];
-
-		char [] chars = new char [] {'\uD800'};
-		e.GetBytes (chars, 0, 1, bytes, 0, false);
-		try {
-			int ret = e.GetBytes (chars, 1, 0, bytes, 0, true);
-#if NET_2_0
-			Console.Write (String.Format ("SufficientByteArray: drop insufficient char in 2.0: char[]; ret should be 0 <{0}>\n", ret));
-#else
-			Console.Write ("SufficientByteArray: FAIL: drop insufficient char in 1.0: char[]; Expected ArgumentException.\n");
-#endif
-		} catch (ArgumentException) {
-#if !NET_2_0
-			Console.Write ("SufficientByteArray: FAIL: drop insufficient char in 1.0: char[]; Unexpected ArgumentException.\n");
-#endif
-		}
-
-		string s = "\uD800";
-		try {
-			int ret = Encoding.UTF8.GetBytes (s, 0, 1, bytes, 0);
-#if NET_2_0
-			Console.Write (String.Format ("SufficientByteArray: drop insufficient char in 2.0: string; ret should be 0 <{0}>\n", ret));
-#else
-			Console.Write ("SufficientByteArray: FAIL: drop insufficient char in 1.0: string; Expected ArgumentException.\n");
-#endif
-		} catch (ArgumentException) {
-#if !NET_2_0
-			Console.Write ("SufficientByteArray: FAIL: drop insufficient char in 1.0: string; Unexpected ArgumentException.\n");
-#endif
-		}
-	}
-
-	public static void SufficientByteArray2 ()
+	[Test] // bug #565129
+	public void SufficientByteArray2 ()
 	{
 		var u = Encoding.UTF8;
-		Console.WriteLine ("SufficientByteArray2: #1-1 u.GetByteCount should be 3 <{0}>", u.GetByteCount ("\uFFFD"));
-		Console.WriteLine ("SufficientByteArray2: #1-2 u.GetByteCount should be 3 <{0}>", u.GetByteCount ("\uD800"));
-		Console.WriteLine ("SufficientByteArray2: #1-3 u.GetByteCount should be 3 <{0}>", u.GetByteCount ("\uDC00"));
-		Console.WriteLine ("SufficientByteArray2: #1-4 u.GetByteCount should be 4 <{0}>", u.GetByteCount ("\uD800\uDC00"));
+		Assert.AreEqual (3, u.GetByteCount ("\uFFFD"), "#1-1");
+		Assert.AreEqual (3, u.GetByteCount ("\uD800"), "#1-2");
+		Assert.AreEqual (3, u.GetByteCount ("\uDC00"), "#1-3");
+		Assert.AreEqual (4, u.GetByteCount ("\uD800\uDC00"), "#1-4");
 		byte [] bytes = new byte [10];
-		Console.WriteLine ("SufficientByteArray2: #1-5 u.GetBytes should be 3 <{0}>", u.GetBytes ("\uDC00", 0, 1, bytes, 0)); // was bogus
+		Assert.AreEqual (3, u.GetBytes ("\uDC00", 0, 1, bytes, 0), "#1-5"); // was bogus
 
-		Console.WriteLine ("SufficientByteArray2: #2-1 u.GetBytes.Length should be 3 <{0}>", u.GetBytes ("\uFFFD").Length);
-		Console.WriteLine ("SufficientByteArray2: #2-2 u.GetBytes.Length should be 3 <{0}>", u.GetBytes ("\uD800").Length);
-		Console.WriteLine ("SufficientByteArray2: #2-3 u.GetBytes.Length should be 3 <{0}>", u.GetBytes ("\uDC00").Length);
-		Console.WriteLine ("SufficientByteArray2: #2-4 u.GetBytes.Length should be 4 <{0}>", u.GetBytes ("\uD800\uDC00").Length);
+		Assert.AreEqual (3, u.GetBytes ("\uFFFD").Length, "#2-1");
+		Assert.AreEqual (3, u.GetBytes ("\uD800").Length, "#2-2");
+		Assert.AreEqual (3, u.GetBytes ("\uDC00").Length, "#2-3");
+		Assert.AreEqual (4, u.GetBytes ("\uD800\uDC00").Length, "#2-4");
 
 		for (char c = char.MinValue; c < char.MaxValue; c++) {
 			byte [] bIn;
@@ -148,38 +119,88 @@ public class SomeTests
 
 		try {
 			new UTF8Encoding (false, true).GetBytes (new char [] {'\uDF45', '\uD808'}, 0, 2);
-			Console.Write ("SufficientByteArray2: FAIL: EncoderFallbackException is expected.\n");
+			Assert.Fail ("EncoderFallbackException is expected");
 		} catch (EncoderFallbackException) {
-			Console.Write ("SufficientByteArray2: Received expected EncoderFallbackException.\n");
 		}
 	}
 
-	public static void NoPreambleOnAppend ()
+	[Test]
+	public void NoPreambleOnAppend ()
 	{
 		MemoryStream ms = new MemoryStream ();
 		StreamWriter w = new StreamWriter (ms, Encoding.UTF8);
 		w.Write ("a");
 		w.Flush ();
-		Console.WriteLine ("NoPreambleOnAppend: #1 ms.Position should be 4 <{0}>.", ms.Position);
+		Assert.AreEqual (4, ms.Position, "#1");
 
 		// Append 1 byte, should skip the preamble now.
 		w.Write ("a");
 		w.Flush ();
 		w = new StreamWriter (ms, Encoding.UTF8);
-		Console.WriteLine ("NoPreambleOnAppend: #2 ms.Position should be 5 <{0}>.", ms.Position);
+		Assert.AreEqual (5, ms.Position, "#2");
 	}
 
-	public static unsafe void Constructor8_Value_Null ()
+	[Test] // ctor (SByte*, Int32, Int32, Encoding)
+	public unsafe void Constructor8_Value_Null ()
 	{
-		string s1, s2;
-		
-		Console.WriteLine ("Constructor8_Value_Null: #1");
-		s1 = String.Empty;
-		Console.WriteLine ("Constructor8_Value_Null: #2");
-		s2 = new String ((sbyte*) null, 0, 0, Encoding.UTF8);
-		Console.WriteLine ("Constructor8_Value_Null: ##");
+		try {
+			new String ((sbyte*) null, 0, 0, null);
+			Assert.Fail ("#A1");
+		} catch (ArgumentNullException ex) {
+			Assert.AreEqual (typeof (ArgumentNullException), ex.GetType (), "#A2");
+			Assert.IsNull (ex.InnerException, "#A3");
+			Assert.IsNotNull (ex.Message, "#A4");
+			Assert.AreEqual ("value", ex.ParamName, "#A5");
+		}
+
+		try {
+			new String ((sbyte*) null, 0, 1, null);
+			Assert.Fail ("#B1");
+		} catch (ArgumentNullException ex) {
+			Assert.AreEqual (typeof (ArgumentNullException), ex.GetType (), "#B2");
+			Assert.IsNull (ex.InnerException, "#B3");
+			Assert.IsNotNull (ex.Message, "#B4");
+			Assert.AreEqual ("value", ex.ParamName, "#B5");
+		}
+
+		try {
+			new String ((sbyte*) null, 1, 0, null);
+			Assert.Fail ("#C1");
+		} catch (ArgumentNullException ex) {
+			Assert.AreEqual (typeof (ArgumentNullException), ex.GetType (), "#C2");
+			Assert.IsNull (ex.InnerException, "#C3");
+			Assert.IsNotNull (ex.Message, "#C4");
+			Assert.AreEqual ("value", ex.ParamName, "#C5");
+		}
+
+		Assert.AreEqual (String.Empty, new String ((sbyte*) null, 0, 0, Encoding.Default), "#D");
+
+		try {
+			new String ((sbyte*) null, 0, 1, Encoding.Default);
+			Assert.Fail ("#E1");
+		} catch (ArgumentOutOfRangeException ex) {
+			// Pointer startIndex and length do not refer to a
+			// valid string
+			Assert.AreEqual (typeof (ArgumentOutOfRangeException), ex.GetType (), "#E2");
+			Assert.IsNull (ex.InnerException, "#E3");
+			Assert.IsNotNull (ex.Message, "#E4");
+			//Assert.AreEqual ("value", ex.ParamName, "#E5");
+		}
+
+		Assert.AreEqual (String.Empty, new String ((sbyte*) null, 1, 0, Encoding.Default), "#F");
 	}
 
+	// DecoderFallbackExceptionTest
+	//   This struct describes a DecoderFallbackExceptions test. It
+	//   contains the expected indexes (eindex) and bad-bytes lengths
+	//   (elen) delivered by the first and subsequent
+	//   DecoderFallbackException throwed when the utf8 conversion routines
+	//   are exposed by the array of bytes (bytes) contained in this test.
+	//   It also has a nice description (description) for documentation and
+	//   debugging.
+	//
+	//   The hardcoded 'eindex' and 'elen' info is the output that you will
+	//   got if you run this strings on the MS.NET platform.
 	struct DecoderFallbackExceptionTest
 	{
 		public string description;
@@ -201,7 +222,125 @@ public class SomeTests
 		}
 	}
 
-	public static void DecoderFallbackExceptions ()
+	// try to convert the all current test's bytes with Getchars()
+	// in only one step
+	private void DecoderFallbackExceptions_GetChars (
+		char [] chars,
+		int testno,
+		Decoder dec,
+		DecoderFallbackExceptionTest t)
+	{
+		try {
+			dec.GetChars (t.bytes, 0, t.bytes.Length, chars, 0, true);
+				Assert.IsTrue (
+					t.eindex.Length == 0,
+					String.Format (
+						"test#{0}-1: UNEXPECTED SUCCESS",
+						testno));
+		} catch(DecoderFallbackException ex) {
+			Assert.IsTrue (
+				t.eindex.Length > 0,
+				String.Format (
+					"test#{0}-1: UNEXPECTED FAIL",
+					testno));
+			Assert.IsTrue (
+				ex.Index == t.eindex[0],
+				String.Format (
+					"test#{0}-1: Expected exception at {1} not {2}.",
+					testno,
+					t.eindex[0],
+					ex.Index));
+			Assert.IsTrue (
+				ex.BytesUnknown.Length == t.elen[0],
+				String.Format (
+					"test#{0}-1: Expected BytesUnknown.Length of {1} not {2}.",
+					testno,
+					t.elen[0],
+					ex.BytesUnknown.Length));
+			for (int i = 0; i < ex.BytesUnknown.Length; i++)
+				Assert.IsTrue (
+					ex.BytesUnknown[i] == t.bytes[ex.Index + i],
+					String.Format (
+						"test#{0}-1: expected byte {1:X} not {2:X} at {3}.",
+						testno,
+						t.bytes[ex.Index + i],
+						ex.BytesUnknown[i],
+						ex.Index + i));
+			dec.Reset ();
+		}
+	}
+
+	// convert bytes to string using a fixed blocksize.
+	// If something bad happens, try to recover using the
+	// DecoderFallbackException info.
+	private void DecoderFallbackExceptions_Convert (
+		char [] chars,
+		int testno,
+		Decoder dec,
+		DecoderFallbackExceptionTest t,
+		int block_size)
+	{
+		int charsUsed, bytesUsed;
+		bool completed;
+
+		int ce = 0; // current exception
+		for (int c = 0; c < t.bytes.Length; ) {
+			try {
+				int bu = c + block_size > t.bytes.Length
+						? t.bytes.Length - c
+						: block_size;
+				dec.Convert (
+					t.bytes, c, bu,
+					chars, 0, chars.Length,
+					c + bu >= t.bytes.Length,
+					out bytesUsed, out charsUsed,
+					out completed);
+				c += bytesUsed;
+			} catch(DecoderFallbackException ex) {
+				Assert.IsTrue (
+					t.eindex.Length > ce,
+					String.Format (
+						"test#{0}-2-{1}#{2}: UNEXPECTED FAIL (c={3}, eIndex={4}, eBytesUnknwon={5})",
+						testno, block_size, ce, c,
+						ex.Index,
+						ex.BytesUnknown.Length));
+				Assert.IsTrue (
+					ex.Index + c == t.eindex[ce],
+					String.Format (
+						"test#{0}-2-{1}#{2}: Expected at {3} not {4}.",
+						testno, block_size, ce,
+						t.eindex[ce],
+						ex.Index + c));
+				Assert.IsTrue (
+					ex.BytesUnknown.Length == t.elen[ce],
+					String.Format (
+						"test#{0}-2-{1}#{2}: Expected BytesUnknown.Length of {3} not {4} @{5}.",
+						testno, block_size, ce,
+						t.elen[0], ex.BytesUnknown.Length, c));
+				for (int i = 0; i < ex.BytesUnknown.Length; i++)
+					Assert.IsTrue (
+						ex.BytesUnknown[i] == t.bytes[ex.Index + i + c],
+						String.Format (
+							"test#{0}-2-{1}#{2}: Expected byte {3:X} not {4:X} at {5}.",
+							testno, block_size, ce,
+							t.bytes[ex.Index + i + c],
+							ex.BytesUnknown[i],
+							ex.Index + i));
+				c += ex.BytesUnknown.Length + ex.Index;
+				ce++;
+				dec.Reset ();
+				continue;
+			}
+		}
+		Assert.IsTrue (
+			t.eindex.Length <= ce,
+			String.Format (
+				"test#{0}-2-{1}: UNEXPECTED SUCCESS",
+				testno, block_size));
+	}
+
+	[Test]
+	public void DecoderFallbackExceptions ()
 	{
 
 		DecoderFallbackExceptionTest [] tests = new DecoderFallbackExceptionTest []
@@ -784,102 +923,30 @@ public class SomeTests
 					new DecoderExceptionFallback());
 		Decoder dec = utf8.GetDecoder ();
 		char [] chars;
-		int charsUsed, bytesUsed;
-		bool completed;
 
-		int testno = 1;
-		int b, c, ce, bu;
-		foreach (DecoderFallbackExceptionTest t in tests) {
-			chars = new char [ utf8.GetMaxCharCount (t.bytes.Length) ];
+		for(int t = 0; t < tests.Length; t++) {
+			chars = new char [utf8.GetMaxCharCount (tests[t].bytes.Length)];
 
 			// #1 complete conversion
-			try {
-				dec.GetChars (t.bytes, 0, t.bytes.Length, chars, 0, true);
-				if (t.eindex.Length > 0)
-					Console.WriteLine ("DecoderFallbackExceptions: test#{0}-1: UNEXPECTED SUCCESS", testno);
-			} catch(DecoderFallbackException ex) {
-				if (t.eindex.Length > 0)
-				{
-					if (ex.Index != t.eindex[0])
-						Console.WriteLine (
-							"DecoderFallbackExceptions: test#{0}-1: Expected exception at {1} not {2}.",
-							testno, t.eindex[0], ex.Index);
-					if (ex.BytesUnknown.Length != t.elen[0])
-						Console.WriteLine (
-							"DecoderFallbackExceptions: test#{0}-1: Expected BytesUnknown.Length of {1} not {2}.",
-							testno, t.elen[0], ex.BytesUnknown.Length);
-					for (int i = 0; i < ex.BytesUnknown.Length; i++)
-						if (ex.BytesUnknown[i] != t.bytes[ex.Index + i])
-							Console.WriteLine (
-								"DecoderFallbackExceptions: test#{0}-1: expected byte {1:X} not {2:X} at {3}.",
-								testno,
-								t.bytes[ex.Index + i],
-								ex.BytesUnknown[i],
-								ex.Index + i);
-					c = ex.Index + 1;
-				} else {
-					Console.WriteLine ("DecoderFallbackExceptions: test#{0}-1: UNEXPECTED FAIL", testno);
-				}
-				dec.Reset ();
-			}
+			DecoderFallbackExceptions_GetChars (chars, t+1, dec, tests[t]);
 
-			// #2 convert in several rounds
-			for (b = 1; b < t.bytes.Length; b += 1) {
-				ce = 0; // current exception
-				for (c = 0; c < t.bytes.Length; ) {
-					try {
-						bu = c + b > t.bytes.Length
-							? t.bytes.Length - c
-							: b;
-						dec.Convert (
-							t.bytes, c, bu,
-							chars, 0, chars.Length,
-							c + bu >= t.bytes.Length,
-							out bytesUsed, out charsUsed,
-							out completed);
-						c += bytesUsed;
-					} catch(DecoderFallbackException ex) {
-						if (t.eindex.Length > ce)
-						{
-							if (ex.Index + c != t.eindex[ce])
-								Console.WriteLine (
-									"DecoderFallbackExceptions: test#{0}-2-{1}#{2}: Expected at {3} not {4}.",
-									testno, b, ce,
-									t.eindex[ce],
-									ex.Index + c);
-							if (ex.BytesUnknown.Length != t.elen[ce])
-								Console.WriteLine (
-									"DecoderFallbackExceptions: test#{0}-2-{1}#{2}: Expected BytesUnknown.Length of {3} not {4} @{5}.",
-									testno, b, ce,
-									t.elen[0], ex.BytesUnknown.Length, c);
-							for (int i = 0; i < ex.BytesUnknown.Length; i++)
-								if (ex.BytesUnknown[i] != t.bytes[ex.Index + i + c])
-									Console.WriteLine (
-										"DecoderFallbackExceptions: test#{0}-2-{1}#{2}: Expected byte {3:X} not {4:X} at {5}.",
-										testno, b, ce,
-										t.bytes[ex.Index + i + c],
-										ex.BytesUnknown[i],
-										ex.Index + i);
-						} else {
-							Console.WriteLine (
-								"DecoderFallbackExceptions: test#{0}-2-{1}#{2}: UNEXPECTED FAIL (c={3}, eIndex={4}, eBytesUnknwon={5})",
-								testno, b, ce, c,
-								ex.Index,
-								ex.BytesUnknown.Length);
-						}
-						c += ex.BytesUnknown.Length + ex.Index;
-						ce++;
-						dec.Reset ();
-						continue;
-					}
-				}
-				if (t.eindex.Length > ce)
-					Console.WriteLine ("DecoderFallbackExceptions: test#{0}-2-{1}: UNEXPECTED SUCCESS", testno, b);
-			}
-			testno++;
+			// #2 convert with several block_sizes
+			for (int bs = 1; bs < tests[t].bytes.Length; bs++)
+				DecoderFallbackExceptions_Convert (chars, t+1, dec, tests[t], bs);
 		}
 	}
 
+	// EncoderFallbackExceptionTest
+	//   This struct describes a EncoderFallbackExceptions' test. It
+	//   contains a flag (valid) that marks the testing string (str) as
+	//   valid or invalid UTF16 input.
+	//   If it is a invalid string it also declares two values:
+	//     - 'index_fail' which points to the invalid char in 'str'.
+	//     - 'unknown_surrogate' which is always false. I've not found any
+	//       sample that makes true this flag.
+	//   This two values are hardcoded in each tests and they are the
+	//   expected values that you will found in an EncoderFallbackException
+	//   exception thrown if you run strings on a MS.NET platform.
 	struct EncoderFallbackExceptionTest
 	{
 		public bool valid, unknown_surrogate;
@@ -897,7 +964,55 @@ public class SomeTests
 		}
 	}
 
-	public static void EncoderFallbackExceptions ()
+	// try to encode some bytes at once with GetBytes
+	private void EncoderFallbackExceptions_GetBytes (
+		byte [] bytes,
+		int testno,
+		Encoder enc,
+		EncoderFallbackExceptionTest t)
+	{
+		try {
+			enc.GetBytes (
+				t.str.ToCharArray (), 0, t.str.Length,
+				bytes, 0, true);
+			Assert.IsTrue (
+				t.valid,
+				String.Format (
+					"test#{0}-1: UNEXPECTED SUCCESS",
+					testno));
+		} catch(EncoderFallbackException ex) {
+			Assert.IsTrue (
+				!t.valid,
+				String.Format (
+					"test#{0}-1: UNEXPECTED FAIL",
+					testno));
+			int expected_index_fail = t.index_fail;
+			Assert.IsTrue (
+				ex.Index == expected_index_fail,
+				String.Format (
+					"test#{0}-1: Expected exception at {1} not {2}.",
+					testno, expected_index_fail, ex.Index));
+			if (ex.IsUnknownSurrogate () != t.unknown_surrogate)
+				Console.WriteLine ("test#{0}-1: Expected {1} not {2} in IsUnknownSurrogate().", testno, t.unknown_surrogate, ex.IsUnknownSurrogate ());
+			else {
+				if (ex.IsUnknownSurrogate ())
+				{
+					if (ex.CharUnknownHigh != t.str[ex.Index] || ex.CharUnknownLow  != t.str[ex.Index + 1])
+						Console.WriteLine ("test#{0}-1: expected ({1:X}, {2:X}) not ({3:X}, {4:X}).",
+									testno,
+									t.str[ex.Index], t.str[ex.Index + 1],
+									ex.CharUnknownHigh, ex.CharUnknownLow);
+				} else {
+					if (ex.CharUnknown != t.str[ex.Index])
+						Console.WriteLine ("test#{0}-1: expected ({1:X}) not ({2:X}).",
+									testno, t.str[ex.Index], ex.CharUnknown);
+				}
+			}
+			enc.Reset ();
+		}
+	}
+
+	public void EncoderFallbackExceptions ()
 	{
 
 		EncoderFallbackExceptionTest [] tests = new EncoderFallbackExceptionTest []
@@ -930,7 +1045,6 @@ public class SomeTests
 		bool completed;
 
 		int testno = 1;
-		int b, c;
 		foreach (EncoderFallbackExceptionTest t in tests) {
 			bytes = new byte [ utf8.GetMaxByteCount (t.str.Length) ];
 
@@ -961,7 +1075,6 @@ public class SomeTests
 											testno, t.str[ex.Index], ex.CharUnknown);
 						}
 					}
-					c = ex.Index + 1;
 				} else {
 					Console.WriteLine ("EncoderFallbackExceptions: test#{0}-1: UNEXPECTED FAIL", testno);
 				}
@@ -969,8 +1082,10 @@ public class SomeTests
 			}
 
 			// #2 convert in two rounds
-			for (b = 0; b < t.str.Length; b += 1)
+			int c;
+			for (int b = 0; b < t.str.Length; b += 1)
 			{
+				c = 0;
 				try {
 					enc.Convert (
 						t.str.ToCharArray (), 0, b,
@@ -1050,27 +1165,28 @@ public class SomeTests
 		}
 	}
 
-	public static void Main ()
-	{
-#if NET_2_0
-		Console.Write ("NET 2.0\n");
-#else
-		Console.Write ("NET 1.0\n");
-#endif
-		byte [] a = new byte[0];
-		Console.WriteLine ("a is null? = {0}", a == null);
-		if (a == null)
-		DecoderConvertLimitedDestination ();
-		EncoderConvertLimitedDestination ();
-		Bug10788 ();
-		Bug10789 ();
-		ConvertZeroCharacters ();
-		SufficientByteArray ();
-		SufficientByteArray2 ();
-		NoPreambleOnAppend ();
-		Constructor8_Value_Null ();
-		EncoderFallbackExceptions ();
-		DecoderFallbackExceptions ();
-	}
+	//	public void Main ()
+	//	{
+	//#if NET_2_0
+	//		Console.Write ("NET 2.0\n");
+	//#else
+	//		Console.Write ("NET 1.0\n");
+	//#endif
+	//		byte [] a = new byte[0];
+	//		Console.WriteLine ("a is null? = {0}", a == null);
+	//		if (a == null)
+	//		DecoderConvertLimitedDestination ();
+	//		EncoderConvertLimitedDestination ();
+	//		Bug10788 ();
+	//		Bug10789 ();
+	//		ConvertZeroCharacters ();
+	//		SufficientByteArray ();
+	//		SufficientByteArray2 ();
+	//		NoPreambleOnAppend ();
+	//		Constructor8_Value_Null ();
+	//		EncoderFallbackExceptions ();
+	//		DecoderFallbackExceptions ();
+	//	}
 }
 
+}
