@@ -19,7 +19,7 @@ gen-utf16 : gen-utf16.c
 	$(GMCS) -debug -unsafe $^ -sdk:2 -out:$@
 
 %.dll : %.cs
-	$(MCS) -target:library -unsafe -r:nunit.framework.dll -out:SomeTests.dll SomeTests.cs
+	$(MCS) -debug -target:library -unsafe -r:nunit.framework.dll -out:SomeTests.dll SomeTests.cs
 
 SomeTests.dll : SomeTests.cs
 
