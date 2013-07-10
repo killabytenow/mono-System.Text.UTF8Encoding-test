@@ -96,6 +96,43 @@ public class SomeTests
 		Assert.AreEqual (0, bytesUsed, "#3");
 	}
 
+	[Test]
+	public void SufficientByteArray ()
+	{
+		Encoder e = Encoding.UTF8.GetEncoder ();
+		byte [] bytes = new byte [0];
+
+		char [] chars = new char [] {'\uD800'};
+		e.GetBytes (chars, 0, 1, bytes, 0, false);
+		int ret;
+		try {
+			ret = e.GetBytes (chars, 1, 0, bytes, 0, true);
+#if NET_4_0
+			Assert.AreEqual (0, ret, "drop insufficient char in 2.0: char[]");
+#else
+			Assert.Fail ("ArgumentException is expected: char[]");
+#endif
+		} catch (ArgumentException ae) {
+#if NET_4_0
+			throw ae;
+#endif
+		}
+
+		string s = "\uD800";
+		try {
+			ret = Encoding.UTF8.GetBytes (s, 0, 1, bytes, 0);
+#if NET_4_0
+			Assert.AreEqual (0, ret, "drop insufficient char in 2.0: string");
+#else
+			Assert.Fail ("ArgumentException is expected: string");
+#endif
+		} catch (ArgumentException ae) {
+#if NET_4_0
+			throw ae;
+#endif
+		}
+	}
+		
 	[Test] // bug #565129
 	public void SufficientByteArray2 ()
 	{
@@ -191,7 +228,7 @@ public class SomeTests
 	}
 
 	// DecoderFallbackExceptionTest
-	//   This struct describes a DecoderFallbackExceptions test. It
+	//   This struct describes a DecoderFallbackExceptions' test. It
 	//   contains the expected indexes (eindex) and bad-bytes lengths
 	//   (elen) delivered by the first and subsequent
 	//   DecoderFallbackException throwed when the utf8 conversion routines
