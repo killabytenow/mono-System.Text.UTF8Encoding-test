@@ -1,11 +1,24 @@
 mono-System.Text.UTF8Encoding-test
 ==================================
 
-This program is built using the Makefile included, which compiles the test
-program and generate some test files.
+This tests are written for testing my patches against mono (see git pull
+request https://github.com/mono/mono/pull/622).
 
-Then it must be executed with a Mono runtime and a MS.NET runtime.
+The test programs are built using the Makefile included, which compiles the
+test program and generate some test files.
 
-Once execution is finished use the 'mkdiff.sh' shell script for comparing the
-output of both runtimes. Two compatible System.Text.UTF8Encoding shouldn't
-leave any *.diff file in the 'cnv-diff' directory.
+They must be executed with a Mono runtime and a MS.NET runtime.
+
+- convert.exe
+  Must be executed in both platforms. Once executed put the generated
+  directories (cnvout-mono and cnvout-other) in the same folder and run the
+  'mkdiff.sh' shell script. This script will compare the output of both
+  runtimes. If the two implementations of System.Text.UTF8Encoding are
+  compatible then the script shall not leave any *.diff file in the 'cnv-diff'
+  directory.
+
+- SomeTest.dll
+  It is a NUNIT test. It includes some tests from
+  /mono/mcs/class/corlib/Test/System.Text/*.cs and declares two new tests
+  (EncoderFallbackExceptions and DecoderFallbackExceptions).
+
